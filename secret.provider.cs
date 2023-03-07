@@ -6,16 +6,16 @@ public class SecretProvider
 {
     private string? _location;
 
-    public async Task<string> Get(string name) {
+    public async Task<string?> Get(string name) {
         return await this.Get<string>(name);
     }
-    public async Task<T> Get<T>(string name) {
+    public async Task<T?> Get<T>(string name) {
 
         var location = _location ?? "/run/secrets";
         var file = location + "/" + name;
 
         if (!File.Exists(file)) {
-            return null;
+            return default(T);
         }
 
         string value =  (await System.IO.File.ReadAllTextAsync(_location + "/" + name)).Trim();
