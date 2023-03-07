@@ -1,4 +1,6 @@
-﻿namespace DockerSecret;
+﻿using System.IO;
+
+namespace DockerSecret;
 
 public class SecretProvider
 {
@@ -10,6 +12,12 @@ public class SecretProvider
     public async Task<T> Get<T>(string name) {
 
         var location = _location ?? "/run/secrets";
+        var file = location + "/" + name;
+
+        if (!File.Exists(file)) {
+            return null;
+        }
+
         string value =  (await System.IO.File.ReadAllTextAsync(_location + "/" + name)).Trim();
         return (T) Convert.ChangeType(value, typeof(T));
     }

@@ -26,9 +26,9 @@ public class SecretProviderTests
     }
 
     [Fact]
-    public void ShouldReturnNullForSecretNotFound () {
+    public async void ShouldReturnNullForSecretNotFound () {
         var service = new SecretProvider(testLocation);
-        Assert.Equal(null, service.Get("FAKE"));
+        Assert.Null(await service.Get("FAKE"));
     }
 
 }
