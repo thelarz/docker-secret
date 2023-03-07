@@ -30,5 +30,5 @@ await Host.CreateDefaultBuilder(args)
 
 ```
 var dbName = await _secretProvider.Get<string>("DBNAME");
-                    Console.WriteLine(dbName);
+Console.WriteLine(dbName);
 ```
