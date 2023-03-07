@@ -7,10 +7,24 @@ public class SecretProviderTests
 
     private const string testLocation = "TEST-SECRETS";
 
+
+    [Fact]
+    public async void ShouldReturnASecretOfTypeString () {
+        var service = new SecretProvider(testLocation);
+        Assert.IsType<string>(await service.Get<string>("TEST-SECRET"));        
+    }
+
     [Fact]
     public async void ShouldReturnASecret () {
         var service = new SecretProvider(testLocation);
         Assert.Equal("TEST VALUE", await service.Get("TEST-SECRET"));
+    }
+
+    [Fact]
+    public async void ShouldReturnACorrectlyTypedValue () {
+        var service = new SecretProvider(testLocation);
+        Assert.IsType<int>(await service.Get<int>("TEST-INT"));
+        Assert.Equal(23, await service.Get<int>("TEST-INT"));
     }
 
      [Fact]
