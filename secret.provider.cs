@@ -18,7 +18,7 @@ public class SecretProvider
             return default(T);
         }
 
-        string value =  (await System.IO.File.ReadAllTextAsync(_location + "/" + name)).Trim();
+        string value =  (await System.IO.File.ReadAllTextAsync(file)).Trim();
         return (T) Convert.ChangeType(value, typeof(T));
     }
 
