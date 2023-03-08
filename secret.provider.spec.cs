@@ -21,7 +21,7 @@ public class SecretProviderTests
     }
 
     [Fact]
-    public async void ShouldReturnACorrectlyTypedValue () {
+    public async void ShouldReturnACorrectlyTypedIntValue () {
         var service = new SecretProvider(testLocation);
         Assert.IsType<int>(await service.Get<int>("TEST-INT"));
         Assert.Equal(23, await service.Get<int>("TEST-INT"));
@@ -43,6 +43,13 @@ public class SecretProviderTests
     public async void ShouldReturnNullForSecretNotFound () {
         var service = new SecretProvider(testLocation);
         Assert.Null(await service.Get("FAKE"));
+    }
+
+    [Fact]
+    public async void ShouldReturnACorrectlyTypedIBoolValue () {
+        var service = new SecretProvider(testLocation);
+         Assert.IsType<bool>(await service.Get<bool>("TEST-BOOL"));
+        Assert.True(await service.Get<bool>("TEST-BOOL"));
     }
 
 }
