@@ -52,4 +52,15 @@ public class SecretProviderTests
         Assert.True(await service.Get<bool>("TEST-BOOL"));
     }
 
+    [Fact]
+    public async void ShouldReturnASecretOfTypeClass () {
+        var service = new SecretProvider(testLocation);
+        Assert.IsType<Person>(await service.Get<Person>("TEST-JSON"));        
+    }
+
+    class Person 
+    {
+        public string? Name { get; set;}
+    }
+
 }
