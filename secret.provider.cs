@@ -1,32 +1,48 @@
-﻿using System.IO;
+﻿using System.Text.Json;
 
 namespace DockerSecret;
 
-public class SecretProvider
+public class SecretProvider : ISecretProvider
 {
-    private string? _location;
+    private readonly string? _location;
 
-    public async Task<string?> Get(string name) {
+    public async Task<string?> Get(string name)
+    {
         return await this.Get<string>(name);
     }
-    public async Task<T?> Get<T>(string name) {
-
+    public async Task<T?> Get<T>(string name)
+    {
         var location = _location ?? "/run/secrets";
         var file = location + "/" + name;
 
-        if (!File.Exists(file)) {
-            return default(T);
+        if (!File.Exists(file))
+        {
+            return default;
         }
 
-        string value =  (await System.IO.File.ReadAllTextAsync(file)).Trim();
-        return (T) Convert.ChangeType(value, typeof(T));
+        string value = (await File.ReadAllTextAsync(file)).Trim();
+        if (typeof(T).IsClass && typeof(T) != typeof(string))
+        {
+            return JsonSerializer.Deserialize<T>(value);
+        }
+        return (T)Convert.ChangeType(value, typeof(T));
     }
 
-    public string GetLocation() {
+    public string GetLocation()
+    {
         return this._location ?? "/run/secrets";
     }
 
-    public SecretProvider(string? location = null) {
+    public SecretProvider(string? location = null)
+    {
         this._location = location;
     }
+}
+
+
+public interface ISecretProvider
+{
+    Task<string?> Get(string name);
+    Task<T?> Get<T>(string name);
+    string GetLocation();
 }
