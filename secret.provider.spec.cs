@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Xunit;
 
 namespace DockerSecret;
@@ -58,9 +59,24 @@ public class SecretProviderTests
         Assert.IsType<Person>(await service.Get<Person>("TEST-JSON"));        
     }
 
+    [Fact]
+    public async void ShouldReturnASecretOfTypeDynamic () {
+        var service = new SecretProvider(testLocation);
+        dynamic result = (await service.Get<ExpandoObject>("TEST-JSON"))!;
+        Assert.IsType<ExpandoObject>(result);   
+        Assert.Equal("Test name", result.Name);
+        Assert.Equal("My Street", result.Address.StreetName);
+    }
+
+
     class Person 
     {
         public string? Name { get; set;}
+        public Address? Address { get; set;}
+    }
+    class Address
+    {
+        public string? StreetName { get; set;}
     }
 
 }

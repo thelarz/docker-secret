@@ -1,3 +1,6 @@
 {
-    "Name": "Test name"
+    "Name": "Test name",
+    "Address": {
+        "StreetName": "My Street"
+    }
 }

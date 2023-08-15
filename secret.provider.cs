@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
 
 namespace DockerSecret;
 
@@ -23,7 +23,7 @@ public class SecretProvider : ISecretProvider
         string value = (await File.ReadAllTextAsync(file)).Trim();
         if (typeof(T).IsClass && typeof(T) != typeof(string))
         {
-            return JsonSerializer.Deserialize<T>(value);
+            return JsonConvert.DeserializeObject<T>(value);
         }
         return (T)Convert.ChangeType(value, typeof(T));
     }
