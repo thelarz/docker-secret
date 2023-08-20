@@ -35,9 +35,22 @@ namespace DockerSecret.Tests
                         .Load("TEST-INT")
                 )
                 .Build();
-
             Assert.True(Convert.ToBoolean(this.configuration["TEST-BOOL"]));
             Assert.Equal(23, Convert.ToInt32(this.configuration["TEST-INT"]));
+        }
+
+        [Fact]
+        public void LoadAndGetAJsonValue()
+        {
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .LoadJson("TEST-JSON")
+                )
+                .Build();
+            Assert.Equal("Test name", this.configuration["TEST-JSON.Name"]);
+            Assert.Equal("My Street", this.configuration["TEST-JSON.Address.StreetName"]);
         }
 
     }

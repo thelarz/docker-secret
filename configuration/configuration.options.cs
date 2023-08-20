@@ -10,8 +10,13 @@ namespace DockerSecret
 {
     public class Secret {
         public string Name { get; } = "";
+        public Type Type { get; } = typeof(string);
         public Secret(string name) {
             Name = name;
+        }
+        public Secret(string name, Type type) {
+            Name = name;
+            Type = type;
         }
     }
 
@@ -35,6 +40,10 @@ namespace DockerSecret
         }
         public Options Load(string name) {
             (Secrets ?? new List<Secret>()).Add(new Secret(name));
+            return this;
+        }
+        public Options LoadJson(string name) {
+            (Secrets ?? new List<Secret>()).Add(new Secret(name, typeof(object)));
             return this;
         }
 

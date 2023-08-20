@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace DockerSecret.Configuration
 {
@@ -20,7 +21,17 @@ namespace DockerSecret.Configuration
                 var value = Task.Run(async () => {
                     return await secretProvider.Get<string>(secret.Name);
                 }).Result;
-                if (value != null) {
+                if (secret.Type == typeof(object)) {
+                    var flattened = JObject.Parse(value)
+                        .Descendants()
+                        .OfType<JValue>()
+                        .ToDictionary(jv => $"{secret.Name}.{jv.Path}", jv => jv.ToString());
+                    foreach (var kv in flattened) {
+                        this.Data.Add(kv.Key, kv.Value);
+                        Console.WriteLine($"{kv.Key} {kv.Value}");
+                    }
+                }
+                if (secret.Type == typeof(string)) {
                     this.Data.Add(secret.Name, value);
                 }
             }
