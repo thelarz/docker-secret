@@ -53,5 +53,45 @@ namespace DockerSecret.Tests
             Assert.Equal("My Street", this.configuration["TEST-JSON.Address.StreetName"]);
         }
 
+        [Fact]
+        public void ShouldLogTheScalarSecretsAdded()
+        {
+            var stringWriter = new StringWriter();
+	        Console.SetOut(stringWriter);
+
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .Load("TEST-INT")
+                        .Log(true)
+                )
+                .Build();
+
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Assert.Equal("23", this.configuration["TEST-INT"]);
+            Assert.Equal("TEST-INT : 23\n", stringWriter.ToString());
+        }
+
+        [Fact]
+        public void ShouldLogTheJsonSecretsAdded()
+        {
+            var stringWriter = new StringWriter();
+	        Console.SetOut(stringWriter);
+
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .LoadJson("TEST-JSON")
+                        .Log(true)
+                )
+                .Build();
+            
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Assert.Equal("TEST-JSON.Name : Test name\nTEST-JSON.Address.StreetName : My Street\n", stringWriter.ToString());
+
+        }
+
     }
 }

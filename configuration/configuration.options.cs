@@ -26,12 +26,15 @@ namespace DockerSecret
 
         public string? Location { get; private set;}
         public IList<Secret>? Secrets { get; }
+        public bool Logging { get; private set;}
 
 
         public Options(string? location = ".",
-                IList<Secret>? secrets = null) {
+                IList<Secret>? secrets = null,
+                bool logging = false) {
             Location = location;
             Secrets = secrets ?? new List<Secret>();
+            Logging = logging;
         }
 
         public Options FromLocation(string location = ".") {
@@ -44,6 +47,10 @@ namespace DockerSecret
         }
         public Options LoadJson(string name) {
             (Secrets ?? new List<Secret>()).Add(new Secret(name, typeof(object)));
+            return this;
+        }
+        public Options Log(bool logging = false) {
+            Logging = logging;
             return this;
         }
 

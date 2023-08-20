@@ -28,11 +28,16 @@ namespace DockerSecret.Configuration
                         .ToDictionary(jv => $"{secret.Name}.{jv.Path}", jv => jv.ToString());
                     foreach (var kv in flattened) {
                         this.Data.Add(kv.Key, kv.Value);
-                        Console.WriteLine($"{kv.Key} {kv.Value}");
+                        if (options.Logging) {
+                            Console.WriteLine($"{kv.Key} : {kv.Value}");
+                        }
                     }
                 }
                 if (secret.Type == typeof(string)) {
                     this.Data.Add(secret.Name, value);
+                    if (options.Logging) {
+                        Console.WriteLine($"{secret.Name} : {value}");
+                    }
                 }
             }
 
