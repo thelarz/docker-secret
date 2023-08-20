@@ -17,7 +17,6 @@ using SecretConsumer;
 
 await Host.CreateDefaultBuilder(args)
         .ConfigureServices((hostcontext, services) => {
-
             services
                 .AddHostedService<SecretConsumerApp>()
                 .AddSingleton<SecretProvider, SecretProvider>(
@@ -32,3 +31,17 @@ await Host.CreateDefaultBuilder(args)
 var dbName = await _secretProvider.Get<string>("DBNAME");
 Console.WriteLine(dbName);
 ```
+
+Using DockerSecret as a configuration provider
+```
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddDockerSecret(
+            new Options()
+                .FromLocation("test-secrets")
+                .Load("DBNAME")
+                .Load("PASSWORD")
+        )
+    .Build();
+```
+
+Credit to https://github.com/tonerdo/dotnet-env for reference.
