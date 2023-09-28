@@ -7,6 +7,9 @@ namespace DockerSecret.Configuration
     public class DockerSecretConfigurationProvider : ConfigurationProvider
     {
         private readonly Options options = new();
+        private readonly List<string> PrivateDataKeys = new List<string> {
+            "pass", "secret", "token", "private"
+        };
 
         public DockerSecretConfigurationProvider(
             Options options)
@@ -29,14 +32,20 @@ namespace DockerSecret.Configuration
                     foreach (var kv in flattened) {
                         this.Data.Add(kv.Key, kv.Value);
                         if (options.Logging) {
-                            Console.WriteLine($"{kv.Key} : {kv.Value}");
+                            if (PrivateDataKeys.Any(x => kv.Key.Split('.').Last().Contains(x, StringComparison.OrdinalIgnoreCase)))
+                                Console.WriteLine($"{kv.Key} : *redacted*");
+                            else
+                                Console.WriteLine($"{kv.Key} : {kv.Value}");
                         }
                     }
                 }
                 if (secret.Type == typeof(string)) {
                     this.Data.Add(secret.Name, value);
                     if (options.Logging) {
-                        Console.WriteLine($"{secret.Name} : {value}");
+                        if (PrivateDataKeys.Any(x => secret.Name.Contains(x, StringComparison.OrdinalIgnoreCase)))
+                            Console.WriteLine($"{secret.Name} : *redacted*");
+                        else
+                            Console.WriteLine($"{secret.Name} : {value}");
                     }
                 }
             }

@@ -93,5 +93,43 @@ namespace DockerSecret.Tests
 
         }
 
+        [Fact]
+        public void ShouldNotLogTheValueForPrivateKeys()
+        {
+            var stringWriter = new StringWriter();
+	        Console.SetOut(stringWriter);
+
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .Load("PRIVATE-KEY")
+                        .Log(true)
+                )
+                .Build();
+            
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Assert.Equal("PRIVATE-KEY : *redacted*\n", stringWriter.ToString());
+        }
+
+        [Fact]
+        public void ShouldNotLogTheValueForPrivateKeysFromJson()
+        {
+            var stringWriter = new StringWriter();
+	        Console.SetOut(stringWriter);
+
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .LoadJson("PRIVATE-JSON")
+                        .Log(true)
+                )
+                .Build();
+            
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Assert.Equal("PRIVATE-JSON.UserName : TestUser\nPRIVATE-JSON.Password : *redacted*\n", stringWriter.ToString());
+        }
+
     }
 }
