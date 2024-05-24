@@ -1,0 +1,1 @@
+Server=tcp:some-server.database.windows.net,1433;Database=connect-pay;User ID=theuser;Password=(*$%(*&@#()));MultipleActiveResultSets=true

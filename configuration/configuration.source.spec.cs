@@ -131,5 +131,25 @@ namespace DockerSecret.Tests
             Assert.Equal("PRIVATE-JSON.UserName : TestUser\nPRIVATE-JSON.Password : *redacted*\n", stringWriter.ToString());
         }
 
+        [Fact]
+        public void ShouldNotLogTheValueForConnectionStringPasswords()
+        {
+            var stringWriter = new StringWriter();
+	        Console.SetOut(stringWriter);
+
+            this.configuration = new ConfigurationBuilder()
+                .AddDockerSecret(
+                    new Options()
+                        .FromLocation("test-secrets")
+                        .Load("CONNECTION-STRING")
+                        .Log(true)
+                )
+                .Build();
+            
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()));
+            Assert.Contains("CONNECTION-STRING", stringWriter.ToString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Password=*redacted*;", stringWriter.ToString(), StringComparison.OrdinalIgnoreCase);
+        }
+
     }
 }

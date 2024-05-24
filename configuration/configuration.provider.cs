@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
@@ -8,7 +9,7 @@ namespace DockerSecret.Configuration
     {
         private readonly Options options = new();
         private readonly List<string> PrivateDataKeys = new List<string> {
-            "pass", "secret", "token", "private"
+            "pass", "secret", "token", "private", "password"
         };
 
         public DockerSecretConfigurationProvider(
@@ -43,9 +44,12 @@ namespace DockerSecret.Configuration
                     this.Data.Add(secret.Name, value);
                     if (options.Logging) {
                         if (PrivateDataKeys.Any(x => secret.Name.Contains(x, StringComparison.OrdinalIgnoreCase)))
+                        {
                             Console.WriteLine($"{secret.Name} : *redacted*");
-                        else
-                            Console.WriteLine($"{secret.Name} : {value}");
+                            return;
+                        }
+                        value = Regex.Replace(value ?? "", "Password=([^;]*;)", "password=*redacted*;", RegexOptions.IgnoreCase);
+                        Console.WriteLine($"{secret.Name} : {value}");
                     }
                 }
             }
