@@ -48,8 +48,8 @@ namespace DockerSecret.Configuration
                             Console.WriteLine($"{secret.Name} : *redacted*");
                             return;
                         }
-                        value = Regex.Replace(value ?? "", "Password=([^;]*;)", "password=*redacted*;", RegexOptions.IgnoreCase);
-                        Console.WriteLine($"{secret.Name} : {value}");
+                        var displayValue = Regex.Replace(value ?? "", "Password=([^;]*;)", "password=*redacted*;", RegexOptions.IgnoreCase);
+                        Console.WriteLine($"{secret.Name} : {displayValue}");
                     }
                 }
             }
