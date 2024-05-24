@@ -46,7 +46,7 @@ namespace DockerSecret.Configuration
                         if (PrivateDataKeys.Any(x => secret.Name.Contains(x, StringComparison.OrdinalIgnoreCase)))
                         {
                             Console.WriteLine($"{secret.Name} : *redacted*");
-                            return;
+                            continue;
                         }
                         var displayValue = Regex.Replace(value ?? "", "Password=([^;]*;)", "password=*redacted*;", RegexOptions.IgnoreCase);
                         Console.WriteLine($"{secret.Name} : {displayValue}");
