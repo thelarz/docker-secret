@@ -34,9 +34,13 @@ namespace DockerSecret.Configuration
                         this.Data.Add(kv.Key, kv.Value);
                         if (options.Logging) {
                             if (PrivateDataKeys.Any(x => kv.Key.Split('.').Last().Contains(x, StringComparison.OrdinalIgnoreCase)))
+                            {
                                 Console.WriteLine($"{kv.Key} : *redacted*");
-                            else
-                                Console.WriteLine($"{kv.Key} : {kv.Value}");
+                                continue;
+                            }
+                            var displayValue = Regex.Replace(kv.Value ?? "", "Password=([^;]*;)", "password=*redacted*;", RegexOptions.IgnoreCase);
+                            Console.WriteLine($"{kv.Key} : {displayValue}");
+                            continue;
                         }
                     }
                 }

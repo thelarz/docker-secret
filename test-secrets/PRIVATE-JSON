@@ -1,4 +1,5 @@
 {
+    "ConnectionString": "Server=tcp:some-server.database.windows.net,1433;Database=connect-pay;User ID=theuser;Password=(*$%(*&@#()));MultipleActiveResultSets=true",
     "UserName": "TestUser",
     "Password": "P@ssw0rd!"
 }
